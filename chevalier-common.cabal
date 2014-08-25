@@ -1,6 +1,6 @@
 cabal-version:       >=1.10
 name:                chevalier-common
-version:             0.1.0
+version:             0.2.0
 synopsis:            Common types for Chevalier
 license:             BSD3
 author:              Anchor Engineering <engineering@anchor.com.au>
@@ -16,7 +16,13 @@ library
   hs-source-dirs:    lib
   default-language:  Haskell2010
 
-  exposed-modules:   Chevalier.Types
+  exposed-modules:   Chevalier.Types,
+                     Chevalier.Util
   build-depends:     base >=4.7 && <4.8,
+                     vaultaire-common,
                      protobuf,
-                     text
+                     text,
+                     locators,
+                     cereal,
+                     bytestring,
+                     unordered-containers

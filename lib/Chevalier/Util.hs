@@ -8,6 +8,7 @@ module Chevalier.Util where
 import qualified Data.ByteString as S
 import Data.HashMap.Strict(fromList)
 import Data.Locator
+import Data.Monoid
 import Data.ProtocolBuffers hiding (field)
 import Data.Serialize
 import Data.Text(splitOn, pack, unpack, append, Text)
@@ -35,7 +36,9 @@ buildRequestFromQuery (SourceQuery q address page page_size _ _) =
         a   -> Just $ fromIntegral $ fromBase62 $ unpack a
 
 buildTag :: Text -> Text -> SourceTag
-buildTag key value = SourceTag (putField key) (putField value)
+buildTag key value = SourceTag
+                     (putField key)
+                     (putField $ "*" <> value <> "*")
     
 decodeTag :: SourceTag -> (Text, Text)
 decodeTag (SourceTag key value) = (getField key, getField value)

@@ -38,13 +38,21 @@ buildRequestFromQuery (SourceQuery q address page page_size _ _) =
 buildTag :: Text -> Text -> SourceTag
 buildTag key value = SourceTag
                      (putField key)
-                     (putField $ "*" <> value <> "*")
+                     (putField value)
     
+buildWildcardTag :: Text -> SourceTag
+buildWildcardTag value = SourceTag
+                         (putField "*")
+                         (putField $ "*" <> value <> "*")
+
 decodeTag :: SourceTag -> (Text, Text)
 decodeTag (SourceTag key value) = (getField key, getField value)
 
 buildRequestFromPairs :: [(Text, Text)] -> SourceRequest
 buildRequestFromPairs = buildRequestFromTags . map (uncurry buildTag)
+
+wildcardQuery :: [Text] -> SourceRequest
+wildcardQuery = buildRequestFromTags . map buildWildcardTag
 
 buildRequestFromTags :: [SourceTag] -> SourceRequest
 buildRequestFromTags tags =

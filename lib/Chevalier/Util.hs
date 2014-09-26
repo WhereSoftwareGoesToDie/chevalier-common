@@ -11,7 +11,7 @@ import Data.Locator
 import Data.Monoid
 import Data.ProtocolBuffers hiding (field)
 import Data.Serialize
-import Data.Text(splitOn, pack, unpack, append, Text)
+import Data.Text(splitOn, unpack, append, Text)
 
 import Chevalier.Types
 import Vaultaire.Types
@@ -27,7 +27,7 @@ buildRequestFromQuery (SourceQuery q address page page_size _ _) =
         , addressKey     = putField address'
         }
   where
-    buildTags q = 
+    buildTags q =
         let values = splitOn "*" q in
         [SourceTag {field = putField "*", value = putField (wrap a)} | a <- values]
     wrap v = append "*" $ append v $ "*"
@@ -35,24 +35,37 @@ buildRequestFromQuery (SourceQuery q address page page_size _ _) =
         "*" -> Nothing
         a   -> Just $ fromIntegral $ fromBase62 $ unpack a
 
+-- strict
 buildTag :: Text -> Text -> SourceTag
 buildTag key value = SourceTag
                      (putField key)
                      (putField value)
-    
+buildRequestFromPairs :: [(Text, Text)] -> SourceRequest
+buildRequestFromPairs = buildRequestFromTags . map (uncurry buildTag)
+
+
+-- fuzzy
+buildFuzzyRequestTag :: Text -> Text -> SourceTag
+buildFuzzyRequestTag key value = SourceTag
+                                       (putField key)
+                                       (putField $ "*" <> value <> "*")
+buildFuzzyRequestFromPairs :: [(Text, Text)] -> SourceRequest
+buildFuzzyRequestFromPairs = buildRequestFromTags . map (uncurry buildFuzzyRequestTag)
+
+-- wild
 buildWildcardTag :: Text -> SourceTag
 buildWildcardTag value = SourceTag
                          (putField "*")
                          (putField $ "*" <> value <> "*")
+buildWildRequestFromPairs :: [(Text, Text)] -> SourceRequest
+buildWildRequestFromPairs = buildRequestFromTags . map (buildWildcardTag . snd)
 
-decodeTag :: SourceTag -> (Text, Text)
-decodeTag (SourceTag key value) = (getField key, getField value)
-
-buildRequestFromPairs :: [(Text, Text)] -> SourceRequest
-buildRequestFromPairs = buildRequestFromTags . map (uncurry buildTag)
 
 wildcardQuery :: [Text] -> SourceRequest
 wildcardQuery = buildRequestFromTags . map buildWildcardTag
+
+decodeTag :: SourceTag -> (Text, Text)
+decodeTag (SourceTag key value) = (getField key, getField value)
 
 buildRequestFromTags :: [SourceTag] -> SourceRequest
 buildRequestFromTags tags =

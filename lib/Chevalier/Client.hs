@@ -1,5 +1,5 @@
 module Chevalier.Client
-     ( getSourceDict )
+     ( getSourceDict, getAddresses )
 where
 
 import           Control.Monad.Trans
@@ -17,6 +17,10 @@ getSourceDict :: MonadIO m => Origin -> Address -> m (Maybe SourceDict)
 getSourceDict org addr = do
   resp <- runChevalier org $ buildRequestFromAddress addr
   return $ fmap snd $ find ((==addr) . fst) resp
+
+getAddresses :: MonadIO m => Origin -> (String, String) -> m [(Address, SourceDict)]
+getAddresses org (k,v) =
+  runChevalier org $ buildRequestFromPairs [(T.pack k, T.pack v)]
 
 runChevalier :: MonadIO m => Origin -> SourceRequest -> m [(Address, SourceDict)]
 runChevalier origin req = do

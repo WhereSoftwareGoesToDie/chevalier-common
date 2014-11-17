@@ -27,9 +27,11 @@ buildRequestFromQuery (SourceQuery q address page page_size _ _) =
         , addressKey     = putField address'
         }
   where
-    buildTags q =
-        let values = splitOn "*" q in
-        [SourceTag {field = putField "*", value = putField (wrap a)} | a <- values]
+    buildTags q = case q of
+            Left q -> let values = splitOn "*" q in
+                      [SourceTag {field = putField "*", value = putField (wrap a)} | a <- values]
+	    Right a -> a
+
     wrap v = append "*" $ append v $ "*"
     address' = case address of
         "*" -> Nothing

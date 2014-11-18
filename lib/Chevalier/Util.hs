@@ -19,18 +19,14 @@ import Vaultaire.Types
 -- |Building SourceRequests
 
 buildRequestFromQuery :: SourceQuery -> SourceRequest
-buildRequestFromQuery (SourceQuery q address page page_size _ _) =
+buildRequestFromQuery (SourceQuery tags address page page_size _ _) =
     SourceRequest
-        { requestTags    = putField $ buildTags q
+        { requestTags    = putField tags
         , startPage      = putField $ Just $ fromIntegral page
         , sourcesPerPage = putField $ Just $ fromIntegral page_size
         , addressKey     = putField address'
         }
   where
-    buildTags q =
-        let values = splitOn "*" q in
-        [SourceTag {field = putField "*", value = putField (wrap a)} | a <- values]
-    wrap v = append "*" $ append v $ "*"
     address' = case address of
         "*" -> Nothing
         a   -> Just $ fromIntegral $ fromBase62 $ unpack a

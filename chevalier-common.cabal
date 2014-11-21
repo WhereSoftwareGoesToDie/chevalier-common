@@ -1,6 +1,6 @@
 cabal-version:       >=1.10
 name:                chevalier-common
-version:             0.5.0
+version:             0.5.1
 synopsis:            Common types for Chevalier
 license:             BSD3
 author:              Anchor Engineering <engineering@anchor.com.au>
@@ -21,7 +21,6 @@ library
                      Chevalier.Client
 
   build-depends:     base >=4.7 && <4.8,
-                     vaultaire-common,
                      protobuf,
                      text,
                      locators,
@@ -29,4 +28,6 @@ library
                      bytestring,
                      unordered-containers,
                      mtl,
-                     zeromq4-haskell
+                     zeromq4-haskell,
+                     network-uri,
+                     vaultaire-common

@@ -29,5 +29,6 @@ library
                      unordered-containers,
                      mtl,
                      zeromq4-haskell,
+                     network,
                      network-uri,
                      vaultaire-common

@@ -12,6 +12,10 @@ stability:           experimental
 
 build-type:          Simple
 
+flag network-uri
+   description: Get Network.URI from the network-uri package
+   default: True
+
 library
   hs-source-dirs:    lib
   default-language:  Haskell2010
@@ -20,6 +24,10 @@ library
                      Chevalier.Util,
                      Chevalier.Client
 
+  if flag(network-uri)
+     build-depends: network-uri >= 2.6, network >= 2.6
+  else
+     build-depends: network-uri < 2.6, network < 2.6
   build-depends:     base >=4.7 && <4.8,
                      protobuf,
                      text,
@@ -29,6 +37,4 @@ library
                      unordered-containers,
                      mtl,
                      zeromq4-haskell,
-                     network,
-                     network-uri,
                      vaultaire-common

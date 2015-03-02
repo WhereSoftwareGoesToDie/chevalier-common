@@ -28,7 +28,7 @@ getSourceDict uri org addr = do
 getAddresses :: MonadIO m => URI -> Origin -> (String, String) -> m [(Address, SourceDict)]
 getAddresses uri org = getAddresses' uri org . (: [])
 
--- | Take multiple key-value pairs and return matchec addresses and
+-- | Take multiple key-value pairs and return matched addresses and
 --   sourcedicts.
 getAddresses' :: MonadIO m => URI -> Origin -> [(String, String)] -> m [(Address, SourceDict)]
 getAddresses' uri org tags =

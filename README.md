@@ -1,4 +1,5 @@
 chevalier-common
 ================
 
-Common types for Chevalier
+Query interface and common types for
+[Chevalier](https://github.com/anchor/chevalier).
